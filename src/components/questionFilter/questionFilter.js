@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import QuestionList from '../QuestionList.js/QuestionList';
 
 class QuestionFilter extends Component {
   constructor(props) {
@@ -48,7 +50,8 @@ class QuestionFilter extends Component {
 
     return (
       <div>
-        <div>
+        <div class='col-md-12' style={{ display: 'flex', alignItems: 'center', marginLeft: '5px', marginBottom: '20px' }}>
+        <div class='col-md-3'>
           <label>Exam:</label>
           <input type="text" name="exam" value={exam} onChange={this.handleInputChange} />
         </div>
@@ -56,7 +59,7 @@ class QuestionFilter extends Component {
           <label>Question Type:</label>
           <input type="text" name="questionType" value={questionType} onChange={this.handleInputChange} />
         </div>
-        <div>
+        <div class='col-md-3'>
           <label>Year:</label>
           <input type="number" name="year" value={year} onChange={this.handleInputChange} />
         </div>
@@ -65,25 +68,9 @@ class QuestionFilter extends Component {
           <input type="text" name="subject" value={subject} onChange={this.handleInputChange} />
         </div>
         <button onClick={this.handleFilterQuestions}>Filter Questions</button>
-
-        <div>
-          {questions.map((question, index) => (
-            <div key={index}>
-              <p>Question Text: {question.questionText}</p>
-              <p>Exam: {question.exam}</p>
-              <p>Question Type: {question.questionType}</p>
-              <p>Year: {question.year}</p>
-              <p>Subject: {question.subject}</p>
-              <ul>
-                {question.options.map((option, optionIndex) => (
-                  <li key={optionIndex}>
-                    {option.questionText} (Correct: {option.correct ? 'Yes' : 'No'})
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
         </div>
+
+        <QuestionList questions={questions} />
       </div>
     );
   }

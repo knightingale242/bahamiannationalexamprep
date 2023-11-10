@@ -1,57 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import "./newQuestions.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Define styled components for your form elements
-const Container = styled.div`
-  text-align: center;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 400px;
-  margin: 0 auto;
-`;
-
-const Label = styled.label`
-  font-weight: bold;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 100%;
-  transition: all 0.3s ease;
-
-  &:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px #007bff;
-  }
-`;
-
-const SubmitButton = styled.button`
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
+const apiEndpoint = "http://localhost:8080/api/v1/question/new"
 
 function MyForm() {
   const [formData, setFormData] = useState({
     questionText: '',
     exam: '',
     questionType: '',
-    year: 0,
+    year: null,
     subject: '',
     options: [
       { questionText: '', correct: false },
@@ -74,12 +34,21 @@ function MyForm() {
     }
   };
 
+  const handleCorrectOptionChange = (e) => {
+    const index = parseInt(e.target.dataset.index, 10);
+    const newOptions = formData.options.map((option, i) => ({
+      questionText: option.questionText,
+      correct: i === index,
+    }));
+    setFormData({ ...formData, options: newOptions });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       // Send the form data as a POST request to the API endpoint
-      await axios.post('YOUR_API_ENDPOINT', formData);
+      await axios.post(apiEndpoint, formData);
       alert('Form data submitted successfully!');
     } catch (error) {
       console.error('Error submitting form data:', error);
@@ -87,60 +56,56 @@ function MyForm() {
   };
 
   return (
-    <Container>
-      <h1>Biology Question Form</h1>
-      <Form onSubmit={handleSubmit}>
-        <Label htmlFor="questionText">Question Text</Label>
-        <Input
-          type="text"
-          name="questionText"
-          value={formData.questionText}
-          onChange={handleChange}
-        />
-        <Label htmlFor="exam">Exam</Label>
-        <Input
-          type="text"
-          name="exam"
-          value={formData.exam}
-          onChange={handleChange}
-        />
-        <Label htmlFor="questionType">Question Type</Label>
-        <Input
-          type="text"
-          name="questionType"
-          value={formData.questionType}
-          onChange={handleChange}
-        />
-        <Label htmlFor="year">Year</Label>
-        <Input
-          type="number"
-          name="year"
-          value={formData.year}
-          onChange={handleChange}
-        />
-        <Label htmlFor="subject">Subject</Label>
-        <Input
-          type="text"
-          name="subject"
-          value={formData.subject}
-          onChange={handleChange}
-        />
-        <h3>Options</h3>
+      <form>
+        <h1>New Question Form</h1>
+
+        <label class="form-label">Subject</label>
+        <input class="form-control" list="datalistOptions" name="subject" placeholder="Type to search for a subject..." onChange={handleChange}/>
+        <datalist id="datalistOptions">
+          <option value="Biology"/>
+          <option value="Mathematics"/>
+          <option value="Geography"/>
+          <option value="Chemistry"/>
+          <option value="Combined Science"/>
+        </datalist>
+
+        <label class="form-label">Exam</label>
+        <input type="text" class="form-control form-control-lg" name="exam" onChange={handleChange}/>
+
+        <label class="form-label">Year</label>
+        <input type="number" class="form-control form-control-lg" name="year" onChange={handleChange}/>
+
+        <label class="form-label">Question Type</label>
+        <input type="text" class="form-control form-control-lg" name="questionType" onChange={handleChange}/>
+
+        <label class="form-label">Question Prompt</label>
+        <textarea type="text" class="form-control form-control-lg" name="questionText" rows={4} width='100vw' onChange={handleChange}/>
+
         {formData.options.map((option, index) => (
-          <div key={index}>
-            <Label htmlFor={`option-${index}`}>Option {index + 1}</Label>
-            <Input
-              type="text"
+          <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '20px'}}>
+            <textarea
+              placeholder={"Option" + (index + 1)}
               name="options"
               data-index={index}
               value={option.questionText}
               onChange={handleChange}
+              width='100vw'
+              cols={200}
+              rows={4}
             />
-          </div>
-        ))}
-        <SubmitButton type="submit">Submit</SubmitButton>
-      </Form>
-    </Container>
+            <div class='col-md-1'>
+              <input
+                type="checkbox"
+                name="correctOption"
+                data-index={index}
+                checked={option.correct}
+                onChange={handleCorrectOptionChange}
+              />
+              </div>
+            </div>
+          ))}
+          <button type="submit" class="btn btn-primary" onClick={handleSubmit}>Submit Question</button>
+      </form>
   );
 }
 
