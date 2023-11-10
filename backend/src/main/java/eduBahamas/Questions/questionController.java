@@ -3,6 +3,7 @@ package eduBahamas.Questions;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,12 +33,6 @@ public class questionController {
 
     @PostMapping
     public List<questions> filterQuestion(@RequestBody FilterRequest filterRequest){
-        System.out.println(filterRequest.getExam());
-        System.out.println(filterRequest.getSubject());
-        System.out.println(filterRequest.getYear());
-        System.out.println(filterRequest.getQuestionType());
-        System.out.println("\n");
-
         return questionService.filterQuestions(filterRequest);
     }
 

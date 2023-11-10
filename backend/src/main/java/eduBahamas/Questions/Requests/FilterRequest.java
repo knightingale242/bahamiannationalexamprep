@@ -12,4 +12,6 @@ public class FilterRequest {
     private Integer year;
     private String exam;
     private String questionType;
+    private Integer currentPage;
+    private Integer entityAmount;
 }
